@@ -1,0 +1,25 @@
+{
+  "name": "artsyapistuff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "artsy-getter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node artsy-getter.js"
+  },
+  "author": "Bon Crowder",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "body-parser": "^1.17.2",
+    "colors": "^1.1.2",
+    "csv-string": "^2.3.2",
+    "curlrequest": "^1.0.1",
+    "express": "^4.15.3",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "superagent": "^3.5.2",
+    "traverson": "^6.0.3",
+    "traverson-hal": "^6.0.0"
+  }
+}

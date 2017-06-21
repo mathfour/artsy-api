@@ -1,0 +1,191 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://api.artsy.net/api/"
+    },
+    "current_user": {
+      "href": "https://api.artsy.net/api/current_user"
+    },
+    "docs": {
+      "href": "https://api.artsy.net/api/docs"
+    },
+    "search": {
+      "href": "https://api.artsy.net/api/search{?q}",
+      "templated": true
+    },
+    "status": {
+      "href": "https://api.artsy.net/api/status"
+    },
+    "tokens": {
+      "href": "https://api.artsy.net/api/tokens"
+    },
+    "applications": {
+      "href": "https://api.artsy.net/api/applications{?total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "application": {
+      "href": "https://api.artsy.net/api/applications/{id}",
+      "templated": true
+    },
+    "artists": {
+      "href": "https://api.artsy.net/api/artists{?artwork_id,similar_to_artist_id,similarity_type,published_artworks,artworks,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "artist": {
+      "href": "https://api.artsy.net/api/artists/{id}",
+      "templated": true
+    },
+    "artworks": {
+      "href": "https://api.artsy.net/api/artworks{?artist_id,partner_id,show_id,similar_to_artwork_id,published,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "artwork": {
+      "href": "https://api.artsy.net/api/artworks/{id}",
+      "templated": true
+    },
+    "bidders": {
+      "href": "https://api.artsy.net/api/bidders{?sale_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "bidder": {
+      "href": "https://api.artsy.net/api/bidders/{id}",
+      "templated": true
+    },
+    "bidder_positions": {
+      "href": "https://api.artsy.net/api/bidder_positions{?sale_artwork_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "bidder_position": {
+      "href": "https://api.artsy.net/api/bidder_positions/{id}",
+      "templated": true
+    },
+    "collections": {
+      "href": "https://api.artsy.net/api/collections{?user_id,private,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "collection": {
+      "href": "https://api.artsy.net/api/collections/{id}",
+      "templated": true
+    },
+    "collection_items": {
+      "href": "https://api.artsy.net/api/collection_items{?user_id,collection_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "collection_item": {
+      "href": "https://api.artsy.net/api/collection_items/{id}",
+      "templated": true
+    },
+    "collector_profiles": {
+      "href": "https://api.artsy.net/api/collector_profiles{?owner_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "collector_profile": {
+      "href": "https://api.artsy.net/api/collector_profiles/{id}",
+      "templated": true
+    },
+    "devices": {
+      "href": "https://api.artsy.net/api/devices{?user_id,app_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "device": {
+      "href": "https://api.artsy.net/api/devices/{id}",
+      "templated": true
+    },
+    "fairs": {
+      "href": "https://api.artsy.net/api/fairs{?status,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "fair": {
+      "href": "https://api.artsy.net/api/fairs/{id}",
+      "templated": true
+    },
+    "genes": {
+      "href": "https://api.artsy.net/api/genes{?artist_id,artwork_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "gene": {
+      "href": "https://api.artsy.net/api/genes/{id}",
+      "templated": true
+    },
+    "partners": {
+      "href": "https://api.artsy.net/api/partners{?user_id,partner_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "partner": {
+      "href": "https://api.artsy.net/api/partners/{id}",
+      "templated": true
+    },
+    "partner_contacts": {
+      "href": "https://api.artsy.net/api/partner_contacts{?partner_id,can_contact,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "partner_contact": {
+      "href": "https://api.artsy.net/api/partner_contacts/{id}",
+      "templated": true
+    },
+    "profiles": {
+      "href": "https://api.artsy.net/api/profiles{?total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "profile": {
+      "href": "https://api.artsy.net/api/profiles/{id}",
+      "templated": true
+    },
+    "sale_artworks": {
+      "href": "https://api.artsy.net/api/sale_artworks{?sale_id,published,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "sale_artwork": {
+      "href": "https://api.artsy.net/api/sale_artworks/{id}",
+      "templated": true
+    },
+    "sales": {
+      "href": "https://api.artsy.net/api/sales{?published,live,is_auction,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "sale": {
+      "href": "https://api.artsy.net/api/sales/{id}",
+      "templated": true
+    },
+    "shows": {
+      "href": "https://api.artsy.net/api/shows{?partner_id,status,fair_id,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "show": {
+      "href": "https://api.artsy.net/api/shows/{id}",
+      "templated": true
+    },
+    "users": {
+      "href": "https://api.artsy.net/api/users{?total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "user": {
+      "href": "https://api.artsy.net/api/users/{id}",
+      "templated": true
+    },
+    "user_fair_actions": {
+      "href": "https://api.artsy.net/api/user_fair_actions{?user_id,owner_id,owner_type,total_count,size,cursor,offset,sample,sort}",
+      "templated": true
+    },
+    "user_fair_action": {
+      "href": "https://api.artsy.net/api/user_fair_actions/{id}",
+      "templated": true
+    },
+    "bid": {
+      "href": "https://api.artsy.net/api/bids/{id}",
+      "templated": true
+    },
+    "edition": {
+      "href": "https://api.artsy.net/api/editions/{id}{?artwork_id}",
+      "templated": true
+    },
+    "image": {
+      "href": "https://api.artsy.net/api/images/{id}",
+      "templated": true
+    },
+    "user_detail": {
+      "href": "https://api.artsy.net/api/user_details/{id}",
+      "templated": true
+    }
+  }
+}
