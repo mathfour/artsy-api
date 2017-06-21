@@ -19,28 +19,44 @@ var instance = axios.create({
     }
 });
 
-var appendFileName = 'artists.json';
-var urlFocus = '/artists';
-var getCountUrl = urlFocus + "?total_count=1";
-var maxRecordsAtATime = 10;
-var maxChunksAtATime = 5;
+// bmc: ***************************************************
+// bmc: ************** user can change these **************
+// bmc: ***************************************************
 
+var appendFileName = 'artists'; // bmc: the file to be written
+var urlFocus = '/artists'; // bmc: suffix on the baseURL above that will be called
+var maxRecordsAtATime = 10; // bmc: each page will have this many records
+var maxChunksAtATime = 2; // bmc: each call will do this many pages
+var offSetForThisBatch = 0; // bmc:
+
+// bmc: ***************************************************
+// bmc: ***************************************************
+// bmc: ***************************************************
+
+
+var getCountUrl = urlFocus + "?total_count=1"; // bmc: url to get the number of records
 
 getList(getCountUrl, function (count) {
-var stopAfter = 77488 - (maxChunksAtATime * maxRecordsAtATime);
-    for (var i = 0; i < count - stopAfter; i += maxRecordsAtATime) {
+    var stopAfter = (maxChunksAtATime * maxRecordsAtATime);
+    for (var i = 0; i < stopAfter; i += maxRecordsAtATime) {
 
         console.log('counter is at', i);
 
         console.log('urlFocus is', urlFocus);
 
-        var urlFocusOffset = urlFocus + "?offset=" + i + '?size=' + maxRecordsAtATime;
+        var urlFocusOffset = urlFocus + "?offset=" + i + '?size=100';
         console.log('urlFocusOffset is', urlFocusOffset);
 
-        instance.get(urlFocusOffset)
-        .then(function (response) {
+        var urlSize = urlFocus + '?size=' + maxRecordsAtATime;
 
-            var saveThis = JSON.stringify(response.data);
+        instance.get(urlSize)
+        // instance.get(urlFocus)
+        // instance.get(urlFocusOffset)
+        .then(function (response) {
+            console.log('this works');
+            // console.log('the response.data._embedded.artists[0] before stringify is this'.red, response.data._embedded.artists[0]);
+
+            // var saveThis = JSON.stringify(response.data);
 
             for (var k = 0; k < maxRecordsAtATime; k++) {
                 var saveThisOne =
@@ -55,14 +71,14 @@ var stopAfter = 77488 - (maxChunksAtATime * maxRecordsAtATime);
                         response.data._embedded.artists[k].location + ', ' +
                         response.data._embedded.artists[k].hometown + '\r';
 
-                fs.appendFile(appendFileName, saveThis, function () {
+                fs.appendFile(appendFileName, saveThisOne, function () {
                     console.log(appendFileName, 'has been appended');
                 })
             }
 
 
         }).catch(function (error) {
-            console.log(getRandomIntInclusive(10000, 100000), "ERROR ON LOOP:".rainbow, error.code);
+            console.log(getRandomIntInclusive(10000, 100000), "ERROR ON LOOP:", JSON.stringify(error));
         });
     }
 })
@@ -80,8 +96,8 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// bmc: getList gets the number of records available for this, then returns the count to the callback function - that function embedded above
 function getList(getCountUrlFocus, callback) {
-    console.log('getCountUrl inside the getList fn is', getCountUrlFocus);
 
     instance.get(getCountUrlFocus)
     .then(function (response) {
@@ -92,9 +108,9 @@ function getList(getCountUrlFocus, callback) {
         fs.writeFile(appendFileName, columnHeaders, function () {
             console.log(appendFileName, 'has been created');
 
-        callback(totalRecordCount);
-        })
-    }).catch(function (error) {
-        console.log("bummer, you got an error:", error.code);
-    });
-}
+            callback(totalRecordCount);
+            })
+        }).catch(function (error) {
+            console.log("bummer, you got an error:", error.code);
+        });
+    }
