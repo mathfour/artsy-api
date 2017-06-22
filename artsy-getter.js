@@ -2,15 +2,16 @@
 // bmc: all of my comments are marked with my initials, "bmc"
 // bmc: questions? give me a call at 713-557-8048
 
-// bmc: ***************************************************
+// bmc: ***********************************************
 // bmc: Dependencies
-// bmc: ***************************************************
+// bmc: ***********************************************
 var express = require("express");
 var path = require("path");
 var fs = require('fs');
 var axios = require('axios');
-var CSV = require('csv-string');
 var colors = require("colors");
+var request = require('request');
+const cheerio = require('cheerio');
 
 var PORT = process.env.PORT || 3000;
 var app = express();
@@ -22,20 +23,20 @@ var instance = axios.create({
     }
 });
 
-// bmc: ***************************************************
-// bmc: ************** user can change these **************
-// bmc: ***************************************************
+// bmc: ***********************************************
+// bmc: ************ user can change these ************
+// bmc: ***********************************************
 
-var fileMoniker = 'artists'; // bmc: the file to be written
-var urlFocus = '/artists'; // bmc: suffix on the baseURL above that will be called
-var maxRecordsAtATime = 10; // bmc: each page will have this many records
+var fileMoniker = 'users'; // bmc: the file to be written
+var urlFocus = '/users'; // bmc: suffix on the baseURL above that will be called
+var maxRecordsAtATime = 20; // bmc: each page will have this many records
 var maxChunksAtATime = 2; // bmc: each call will do this many pages
-var offSetForThisBatch = 20; // bmc: if we want to offset todo
+var offSetForThisBatch = 0; // bmc: if we want to offset todo
 var fileType = 'csv'; // bmc: file extension/type to save to
 
-// bmc: ***************************************************
-// bmc: ***************************************************
-// bmc: ***************************************************
+// bmc: ***********************************************
+// bmc: ***********************************************
+// bmc: ***********************************************
 
 // bmc: file name that gives all the info, BUT it still needs the correct extension
 // bmc: this might be better somewhere else in a smaller scope. Maybe. todo
@@ -123,3 +124,20 @@ function getRandomIntInclusive(min, max) {
 app.listen(PORT, function () {
     console.log('listening on port', PORT);
 });
+
+// bmc: BIG TODO
+// bmc: put this inside the loop where I pull all that individual info
+// bmc: then put the slug in place of blinn-jacobs
+// bmc: then add pleaseLetThisWork value to the end of the csv list of stuff
+// bmc: also, add "followers" to the list where I create the initial file
+// bmc: *****************************************************
+// bmc: ************** GOOD CODE BELOW! *********************
+// bmc: *****************************************************
+// request('https://www.artsy.net/artist/blinn-jacobs', function(err, resp, html) {
+//     if (!err){
+//         var $ = cheerio.load(html);
+//         var pleaseLetThisWork = $('.artist-header-follow-count').data('count');
+//         console.log(pleaseLetThisWork);
+//     }
+// });
+// bmc: *****************************************************

@@ -12,12 +12,15 @@
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
+    "cheerio": "^1.0.0-rc.1",
     "colors": "^1.1.2",
     "csv-string": "^2.3.2",
     "curlrequest": "^1.0.1",
     "express": "^4.15.3",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
+    "request": "^2.81.0",
+    "scrape-it": "^3.3.2",
     "superagent": "^3.5.2",
     "traverson": "^6.0.3",
     "traverson-hal": "^6.0.0"
