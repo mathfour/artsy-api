@@ -5,3 +5,4 @@ test/
 test.js
 test.json
 *.csv
+test*.*
