@@ -46,6 +46,7 @@ var batchTitle = fileMoniker + '_Records' + maxRecordsAtATime + '_Chunks' + maxC
 var getCountUrl = urlFocus + "?total_count=1";
 
 // bmc: gets the count, creates the file and then comes back to cycle through and save the records as a file
+
 getList(getCountUrl, function (count) {
     // bmc: instead of going through all 77K or so records, this lets us go through selected small chunks
     var stopAfter = (maxChunksAtATime * maxRecordsAtATime);
@@ -62,6 +63,7 @@ getList(getCountUrl, function (count) {
 
             for (var k = 0; k < maxRecordsAtATime; k++) {
                 // bmc: these seemed to be reasonable bits of to save
+                var followerCount;
                 var saveThisOne =
                         response.data._embedded.artists[k].id + ', ' +
                         response.data._embedded.artists[k].slug + ', ' +
@@ -73,6 +75,17 @@ getList(getCountUrl, function (count) {
                         response.data._embedded.artists[k].nationality + ', ' +
                         response.data._embedded.artists[k].location + ', ' +
                         response.data._embedded.artists[k].hometown + '\r';
+
+                request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
+                    if (!err) {
+                        var $ = cheerio.load(html);
+                        followerCount = $('.artist-header-follow-count').data('count');
+                        console.log(followerCount);
+                    } else {
+                        console.log('error or follower count is not avaialble; need to check' +
+                                ' more ~bmc');
+                    }
+                });
 
                 // bmc: create the file name using the batchTitle and the proper file extension
                 var useThisFileName = batchTitle + '_CurrentTotalCount' + count + '.' + fileType;
@@ -133,11 +146,11 @@ app.listen(PORT, function () {
 // bmc: *****************************************************
 // bmc: ************** GOOD CODE BELOW! *********************
 // bmc: *****************************************************
-// request('https://www.artsy.net/artist/blinn-jacobs', function(err, resp, html) {
-//     if (!err){
-//         var $ = cheerio.load(html);
-//         var pleaseLetThisWork = $('.artist-header-follow-count').data('count');
-//         console.log(pleaseLetThisWork);
-//     }
-// });
+request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
+    if (!err) {
+        var $ = cheerio.load(html);
+        var pleaseLetThisWork = $('.artist-header-follow-count').data('count');
+        console.log(pleaseLetThisWork);
+    }
+});
 // bmc: *****************************************************
