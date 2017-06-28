@@ -2,7 +2,7 @@
   "name": "artsyapistuff",
   "version": "1.0.0",
   "description": "",
-  "main": "artsy-getter.js",
+  "main": "artsy-getter-refactored.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node artsy-getter.js"

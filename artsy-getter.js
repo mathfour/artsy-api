@@ -18,7 +18,7 @@ var app = express();
 var instance = axios.create({
     baseURL: 'https://api.artsy.net/api',
     headers: {
-        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTQ5ODU4OTA1MCwiaWF0IjoxNDk3OTg0MjUwLCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk0OTZjZmExMzliMjE2ZDYwZTBkNTAxIn0.yk2krkVaoBsXT5c7TVA28bR-Vy-N_JQw2uBYmXVTr3I',
+        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTQ5OTExNjUzMSwiaWF0IjoxNDk4NTExNzMxLCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk1MTc5NzMyNzViMjQyNjEzMDA3YzQ1In0.5PrHjT3dOEV3lGZrV8fDlR4NyMgEKnow5iwzXjd7MA0',
         'Accept': 'application/vnd.artsy-v2+json'
     }
 });
@@ -27,8 +27,8 @@ var instance = axios.create({
 // bmc: ************ user can change these ************
 // bmc: ***********************************************
 
-var fileMoniker = 'users'; // bmc: the file to be written
-var urlFocus = '/users'; // bmc: suffix on the baseURL above that will be called
+var fileMoniker = 'artists'; // bmc: the file to be written
+var urlFocus = '/artists'; // bmc: suffix on the baseURL above that will be called
 var maxRecordsAtATime = 20; // bmc: each page will have this many records
 var maxChunksAtATime = 2; // bmc: each call will do this many pages
 var offSetForThisBatch = 0; // bmc: if we want to offset todo
@@ -63,29 +63,73 @@ getList(getCountUrl, function (count) {
 
             for (var k = 0; k < maxRecordsAtATime; k++) {
                 // bmc: these seemed to be reasonable bits of to save
-                var followerCount;
-                var saveThisOne =
-                        response.data._embedded.artists[k].id + ', ' +
-                        response.data._embedded.artists[k].slug + ', ' +
-                        response.data._embedded.artists[k].name + ', ' +
-                        response.data._embedded.artists[k].sortable_name + ', ' +
-                        response.data._embedded.artists[k].gender + ', ' +
-                        response.data._embedded.artists[k].created_at + ', ' +
-                        response.data._embedded.artists[k].updated_at + ', ' +
-                        response.data._embedded.artists[k].nationality + ', ' +
-                        response.data._embedded.artists[k].location + ', ' +
-                        response.data._embedded.artists[k].hometown + '\r';
+                var save = {
+                    id: response.data._embedded.artists[k].id,
+                    slug: response.data._embedded.artists[k].slug,
+                    name: response.data._embedded.artists[k].name,
+                    sortable_name: response.data._embedded.artists[k].sortable_name,
+                    gender: response.data._embedded.artists[k].gender,
+                    created_at: response.data._embedded.artists[k].created_at,
+                    updated_at: response.data._embedded.artists[k].updated_at,
+                    nationality: response.data._embedded.artists[k].nationality,
+                    location: response.data._embedded.artists[k].location,
+                    hometown: response.data._embedded.artists[k].hometown,
+                    follower_count: -1 // bmc: will be scraped in just a sec...
+                };
 
-                request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
+                // bmc: this needs to be a callback, since it's not happening BEFORE the stuff gets saved
+                var urlForKthArtist = 'https://www.artsy.net/artist/' + save.slug;
+                request(urlForKthArtist, function (err, resp, html) {
+                    console.log('urlForKthArtist is', urlForKthArtist);
                     if (!err) {
                         var $ = cheerio.load(html);
-                        followerCount = $('.artist-header-follow-count').data('count');
-                        console.log(followerCount);
+                        thisArtistsFollowerCount = $('.artist-header-follow-count').data('count');
+                        console.log('thisArtistsFollowerCount is', thisArtistsFollowerCount);
+
+                        save.follower_count = thisArtistsFollowerCount;
+                        console.log('save.follower_count is', save.follower_count);
                     } else {
                         console.log('error or follower count is not avaialble; need to check' +
                                 ' more ~bmc');
                     }
                 });
+
+                var saveThisOne =
+                        save.id + ', ' +
+                        save.slug + ', ' +
+                        save.name + ', ' +
+                        save.sortable_name + ', ' +
+                        save.gender + ', ' +
+                        save.created_at + ', ' +
+                        save.updated_at + ', ' +
+                        save.nationality + ', ' +
+                        save.location + ', ' +
+                        save.hometown + ', ' +
+                        save.follower_count + '\r';
+
+                // var followerCount;
+                // var saveThisOne =
+                //         response.data._embedded.artists[k].id + ', ' +
+                //         response.data._embedded.artists[k].slug + ', ' +
+                //         response.data._embedded.artists[k].name + ', ' +
+                //         response.data._embedded.artists[k].sortable_name + ', ' +
+                //         response.data._embedded.artists[k].gender + ', ' +
+                //         response.data._embedded.artists[k].created_at + ', ' +
+                //         response.data._embedded.artists[k].updated_at + ', ' +
+                //         response.data._embedded.artists[k].nationality + ', ' +
+                //         response.data._embedded.artists[k].location + ', ' +
+                //         response.data._embedded.artists[k].hometown + '\r';
+                //
+                // request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
+                //     if (!err) {
+                //         var $ = cheerio.load(html);
+                //         followerCount = $('.artist-header-follow-count').data('count');
+                //         console.log(followerCount);
+                //     } else {
+                //         console.log('error or follower count is not avaialble; need to check' +
+                //                 ' more ~bmc');
+                //     }
+                // });
 
                 // bmc: create the file name using the batchTitle and the proper file extension
                 var useThisFileName = batchTitle + '_CurrentTotalCount' + count + '.' + fileType;
@@ -105,9 +149,10 @@ getList(getCountUrl, function (count) {
 
 // bmc: getList gets the number of records available for this, then returns the count to the callback function - that function embedded above
 function getList(getCountUrlFocus, callback) {
-
+    console.log('inside the getList that gets the count');
     instance.get(getCountUrlFocus)
     .then(function (response) {
+        console.log('in the promise');
         var totalRecordCount = JSON.stringify(response.data.total_count);
 
         // bmc: over the long term, these should be connected to the actual outputs so changing one here doesn't screw the pooch for the whole file - todo
@@ -146,11 +191,27 @@ app.listen(PORT, function () {
 // bmc: *****************************************************
 // bmc: ************** GOOD CODE BELOW! *********************
 // bmc: *****************************************************
-request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
-    if (!err) {
-        var $ = cheerio.load(html);
-        var pleaseLetThisWork = $('.artist-header-follow-count').data('count');
-        console.log(pleaseLetThisWork);
-    }
-});
+// request('https://www.artsy.net/artist/blinn-jacobs', function (err, resp, html) {
+//     if (!err) {
+//         var $ = cheerio.load(html);
+//         var pleaseLetThisWork = $('.artist-header-follow-count').data('count');
+//         console.log(pleaseLetThisWork);
+//     }
+// });
 // bmc: *****************************************************
+
+function getThisArtistsFollowerNumber(slugForArtist) {
+    var urlForKthArtist = 'https://www.artsy.net/artist/' + slugForArtist;
+    request(urlForKthArtist, function (err, resp, html) {
+        console.log('urlForKthArtist is', urlForKthArtist);
+        if (!err) {
+            var $ = cheerio.load(html);
+            thisArtistsFollowerCount = $('.artist-header-follow-count').data('count');
+            return thisArtistsFollowerCount;
+        } else {
+            console.log('error or follower count is not avaialble; need to check' +
+                    ' more ~bmc');
+        }
+    });
+}
+
