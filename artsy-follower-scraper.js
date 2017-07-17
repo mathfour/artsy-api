@@ -11,7 +11,7 @@ var app = express();
 var instance = axios.create({
     baseURL: 'https://api.artsy.net/api',
     headers: {
-        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTQ5ODU4OTA1MCwiaWF0IjoxNDk3OTg0MjUwLCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk0OTZjZmExMzliMjE2ZDYwZTBkNTAxIn0.yk2krkVaoBsXT5c7TVA28bR-Vy-N_JQw2uBYmXVTr3I',
+        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTUwMDMxNDI1OSwiaWF0IjoxNDk5NzA5NDU5LCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk2M2MwMTNhMDlhNjcwZmMzNTg5ODU0In0.q8jqLwKEur86K28fCQO-5HSjd4v8iB5SkWpWR4FqBXU',
         'Accept': 'application/vnd.artsy-v2+json'
     }
 });
