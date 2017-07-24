@@ -19,7 +19,7 @@ const app = express();
 const instance = axios.create({
     baseURL: 'https://api.artsy.net/api',
     headers: {
-        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTUwMDMxNDI1OSwiaWF0IjoxNDk5NzA5NDU5LCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk2M2MwMTNhMDlhNjcwZmMzNTg5ODU0In0.q8jqLwKEur86K28fCQO-5HSjd4v8iB5SkWpWR4FqBXU',
+        'X-XAPP-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IiIsImV4cCI6MTUwMDkyNjg1MSwiaWF0IjoxNTAwMzIyMDUxLCJhdWQiOiI1OTQyZTFiNDhiM2I4MTA5ZmJmODZjMjQiLCJpc3MiOiJHcmF2aXR5IiwianRpIjoiNTk2ZDE5MDNhMDlhNjc1Zjk4ZTg4ZmUyIn0.zESJuM031xLx3HgV_RhPQWQNDnl4nw_TMeyIoOW8530',
         'Accept': 'application/vnd.artsy-v2+json'
     }
 });
@@ -31,8 +31,8 @@ const instance = axios.create({
 let fileMoniker = 'artists'; // bmc: the file to be written
 let urlFocus = '/artists'; // bmc: suffix on the baseURL above that will be called
 
-let maxRecordsAtATime = 20; // bmc: each page will have this many records
-let maxChunksAtATime = 2; // bmc: each call will do this many pages
+let maxRecordsAtATime = 10; // bmc: each page will have this many records
+let maxChunksAtATime = 1; // bmc: each call will do this many pages
 let offSetForThisBatch = 0; // bmc: if we want to offset todo
 let fileType = 'csv'; // bmc: file extension/type to save to
 let useThisFileName;
@@ -59,35 +59,30 @@ async function makeItSo() {
     const artistCount = await getArtistCount(getCountUrl);
     console.log('the artistCount is', artistCount);
     await createFile(artistCount);
+
     console.log('file created');
-    loopByBatch(stopAfter);
+    await loopByBatch(stopAfter);
     console.log('done');
 
 }
 
-function loopByBatch(stopAfter) {
-    for (let i = 0; i < stopAfter; i += maxRecordsAtATime) {
-        // bmc: this lets us get a few small chunks starting at the requested offset from the above user adjustable variables
-        let offsetAmount = offSetForThisBatch + i;
-        let urlFocusOffset = urlFocus + "?offset=" + offsetAmount + '&size=' + maxRecordsAtATime;
-        // console.log('urlFocusOffset (the url that is being accessed) is', urlFocusOffset);
-        saveChunkOfArtists(i, urlFocusOffset);
-    }
+async function loopByBatch(stopAfter) {
+  
+        console.log('stopAfter is', stopAfter);
+        for (let i = 0; i < stopAfter; i += maxRecordsAtATime) {
+            // bmc: this lets us get a few small chunks starting at the requested offset from the above user adjustable variables
+            let offsetAmount = offSetForThisBatch + i;
+            let urlFocusOffset = urlFocus + "?offset=" + offsetAmount + '&size=' + maxRecordsAtATime;
+            // console.log('urlFocusOffset (the url that is being accessed) is', urlFocusOffset);
+            await saveChunkOfArtists(i, urlFocusOffset)
+        }
 }
 
 async function getArtistCount(url) {
     console.log('url is', url);
     console.log('inside getArtistCount');
-    // let theGoods = await instance.get(url);
-    // let theGoods = await axios.get(url);
-        instance.get(url).then(function (res) {
-            console.log('res is', res.data);
-        });
-
-
-    // console.log('theGoods is', theGoods);
-    // let totalRecordCount = JSON.stringify(theGoods.data.total_count);
-    let totalRecordCount = 17;
+    let theGoods = await instance.get(url);
+    let totalRecordCount = JSON.stringify(theGoods.data.total_count);
     console.log('*****************************');
     console.log('*****************************');
     console.log('*****************************');
@@ -129,7 +124,7 @@ async function saveChunkOfArtists(i, urlFocusOffset) {
             location,
             hometown
         } = save;
-        console.log('fetching follower count for', save.slug);
+        // console.log('fetching follower count for', save.slug);
 
         let urlForKthArtist = 'https://www.artsy.net/artist/' + save.slug;
         let follower_count = await scrapeIt(urlForKthArtist);
@@ -148,11 +143,10 @@ async function saveChunkOfArtists(i, urlFocusOffset) {
             follower_count +
             '\r';
 
-        fs.appendFile(useThisFileName, saveThisOne, function () {
+        fs.appendFileSync(useThisFileName, saveThisOne)
             console.log('Follower count for', save.slug, 'has been saved. \r' +
                 'Confirmation', i + '-' + getRandomIntInclusive(100, 100000) + '-' + k);
             console.log('Record appended'.magenta);
-        })
     }
 }
 
@@ -190,6 +184,21 @@ function getRandomIntInclusive(min, max) {
             console.log('Your file', useThisFileName, 'is ready to be opened in a spreadsheet');
             console.log('*******************************');
 
-            // process.exit();
+            process.exit();
         })
     });
+
+
+
+// bmc: code from Leon
+const convertCursorToCsv = async (cursor, csvString) => {
+  for (
+    let doc = await cursor.next();
+    doc != null;
+    doc = await cursor.next()
+  ) {
+    const csvRow = await convertDocToCsv(doc);
+    csvString += csvRow
+  }
+  return csvString
+};
